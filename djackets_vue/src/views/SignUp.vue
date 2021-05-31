@@ -38,7 +38,7 @@
 
           <hr>
 
-          Or <router-link to="/log-in">click here</router-link>to log in
+          Or <router-link to="/log-in">click here </router-link>to log in
         </form>
       </div>
     </div>
@@ -81,9 +81,9 @@ export default {
         }
 
         axios
-            .post("/api/v1/users", formData)
+            .post("/api/v1/users/", formData)
             .then(res => {
-              toast.({
+              toast({
                 message: 'Account created, please log in!',
                 type:'is-success',
                 dismissible:true,
@@ -91,8 +91,20 @@ export default {
                 duration: 2000,
                 position:'bottom-right'
               })
-
               this.$router.push('/log-in')
+            })
+            .catch(error => {
+              if (error.response) {
+                for (const property in error.response.data) {
+                  this.errors.push(`${property}: ${error.response.data[property]}`)
+
+                }
+                  console.log(JSON.stringify(error.response.data))
+              } else if (error.message) {
+                this.errors.push("Something went wrong. Please try again")
+
+                console.log(JSON.stringify(error))
+              }
             })
       }
     }
